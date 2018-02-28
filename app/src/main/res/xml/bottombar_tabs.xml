@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_music_lib"
+        icon="@drawable/ic_library_music"
+        title="Music Library" />
+    <tab
+        id="@+id/tab_folders"
+        icon="@drawable/ic_folder"
+        title="Folders" />
+    <tab
+        id="@+id/tab_settings"
+        icon="@drawable/ic_settings"
+        title="Settings" />
+
+</tabs>
