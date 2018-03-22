@@ -50,9 +50,10 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 	private int currentSongIndex = 0; 
 	private boolean isShuffle = false;
 	private boolean isRepeat = false;
-	private ArrayList<Model> songsList = new ArrayList<Model>();
+	//private ArrayList<Model> songsList = new ArrayList<Model>();
 	private ImageView imgThumbnail;
-
+	private boolean isRelease;
+	public static ArrayList<Model> playlist;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,8 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 		mp.setOnCompletionListener(this); // Important
 		
 
-		songsList= SongsFragment.songsList;
+	//	songsList= SongsFragment.songsList;
+
 		// By default play first song
 		playSong(Integer.parseInt(getIntent().getStringExtra("pos")));
 				
@@ -168,7 +170,7 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 			@Override
 			public void onClick(View arg0) {
 				// check if next song is there or not
-				if(currentSongIndex < (songsList.size() - 1)){
+				if(currentSongIndex < (playlist.size() - 1)){
 					playSong(currentSongIndex + 1);
 					currentSongIndex = currentSongIndex + 1;
 				}else{
@@ -192,8 +194,8 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 					currentSongIndex = currentSongIndex - 1;
 				}else{
 					// play last song
-					playSong(songsList.size() - 1);
-					currentSongIndex = songsList.size() - 1;
+					playSong(playlist.size() - 1);
+					currentSongIndex = playlist.size() - 1;
 				}
 				
 			}
@@ -286,13 +288,13 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 		// Play song
 		try {
         	mp.reset();
-			mp.setDataSource(songsList.get(songIndex).getPath());
+			mp.setDataSource(playlist.get(songIndex).getPath());
 			mp.prepare();
 			mp.start();
 			// Displaying Song title
-			String songTitle = songsList.get(songIndex).getName();
+			String songTitle = playlist.get(songIndex).getName();
         	songTitleLabel.setText(songTitle);
-			Glide.with(this).load(songsList.get(songIndex).getThumbnail()).into(imgThumbnail);
+			Glide.with(this).load(playlist.get(songIndex).getThumbnail()).into(imgThumbnail);
 
 			// Changing Button Image to pause image
 			btnPlay.setImageResource(R.drawable.btn_pause);
@@ -324,21 +326,25 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 	 * */
 	private Runnable mUpdateTimeTask = new Runnable() {
 		   public void run() {
-			   long totalDuration = mp.getDuration();
-			   long currentDuration = mp.getCurrentPosition();
-			  
-			   // Displaying Total Duration time
-			   songTotalDurationLabel.setText(""+utils.milliSecondsToTimer(totalDuration));
-			   // Displaying time completed playing
-			   songCurrentDurationLabel.setText(""+utils.milliSecondsToTimer(currentDuration));
-			   
-			   // Updating progress bar
-			   int progress = (int)(utils.getProgressPercentage(currentDuration, totalDuration));
-			   //Log.d("Progress", ""+progress);
-			   songProgressBar.setProgress(progress);
-			   
-			   // Running this thread after 100 milliseconds
-		       mHandler.postDelayed(this, 100);
+
+			   if(!isRelease) {
+
+				   long totalDuration = mp.getDuration();
+				   long currentDuration = mp.getCurrentPosition();
+
+				   // Displaying Total Duration time
+				   songTotalDurationLabel.setText("" + utils.milliSecondsToTimer(totalDuration));
+				   // Displaying time completed playing
+				   songCurrentDurationLabel.setText("" + utils.milliSecondsToTimer(currentDuration));
+
+				   // Updating progress bar
+				   int progress = (int) (utils.getProgressPercentage(currentDuration, totalDuration));
+				   //Log.d("Progress", ""+progress);
+				   songProgressBar.setProgress(progress);
+
+				   // Running this thread after 100 milliseconds
+				   mHandler.postDelayed(this, 100);
+			   }
 		   }
 		};
 		
@@ -390,11 +396,11 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 		} else if(isShuffle){
 			// shuffle is on - play a random song
 			Random rand = new Random();
-			currentSongIndex = rand.nextInt((songsList.size() - 1) - 0 + 1) + 0;
+			currentSongIndex = rand.nextInt((playlist.size() - 1) - 0 + 1) + 0;
 			playSong(currentSongIndex);
 		} else{
 			// no repeat or shuffle ON - play next song
-			if(currentSongIndex < (songsList.size() - 1)){
+			if(currentSongIndex < (playlist.size() - 1)){
 				playSong(currentSongIndex + 1);
 				currentSongIndex = currentSongIndex + 1;
 			}else{
@@ -409,6 +415,7 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 	 public void onDestroy(){
 	 super.onDestroy();
 	    mp.release();
+	    isRelease=true;
 	 }
 	
 }
