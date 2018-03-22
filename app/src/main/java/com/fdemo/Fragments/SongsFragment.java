@@ -32,7 +32,7 @@ public class SongsFragment extends Fragment {
     private RecyclerView recyclerView;
     private SongsAdapter mAdapter;
     private ArrayList<Model> audioList;
-    public static ArrayList<Model> songsList=new ArrayList<>();
+   // public static ArrayList<Model> songsList=new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,7 +57,7 @@ public class SongsFragment extends Fragment {
 
         getAllSongs();
 
-        songsList=audioList;
+        AndroidBuildingMusicPlayerActivity.playlist=audioList;
 
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
