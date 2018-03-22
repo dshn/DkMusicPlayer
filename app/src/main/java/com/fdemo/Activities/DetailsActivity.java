@@ -1,5 +1,6 @@
 package com.fdemo.Activities;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -9,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -17,6 +19,7 @@ import com.fdemo.Adapters.SongsDetailsAdapter;
 import com.fdemo.Models.Model;
 import com.fdemo.Models.Song;
 import com.fdemo.R;
+import com.fdemo.Utils.RecyclerItemClickListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,6 +49,25 @@ public class DetailsActivity extends AppCompatActivity {
         recyclerViewDetails.setLayoutManager(mLayoutManager);
         recyclerViewDetails.setItemAnimator(new DefaultItemAnimator());
         recyclerViewDetails.setAdapter(mAdapter);
+
+        recyclerViewDetails.addOnItemTouchListener(
+                new RecyclerItemClickListener(DetailsActivity.this, recyclerViewDetails, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        //do whatever
+
+                        Intent i = new Intent(DetailsActivity.this, AndroidBuildingMusicPlayerActivity.class);
+                        i.putExtra("pos",""+position);
+                        startActivity(i);
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                })
+        );
+
 
     }
 
