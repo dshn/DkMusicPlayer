@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.fdemo.Models.Model;
+import com.fdemo.Models.Song;
 import com.fdemo.R;
 
 import java.util.ArrayList;
@@ -20,9 +21,9 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder
 
 
     private final FragmentActivity mContext;
-    private final ArrayList<Model> mAudioList;
+    private final ArrayList<Song> mAudioList;
 
-    public SongsAdapter(FragmentActivity activity, ArrayList<Model> audioList) {
+    public SongsAdapter(FragmentActivity activity, ArrayList<Song> audioList) {
         mContext=activity;
         mAudioList=audioList;
     }
@@ -48,7 +49,7 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.name.setText(mAudioList.get(position).getName());
+        holder.name.setText(mAudioList.get(position).getTitle());
         holder.artist.setText(mAudioList.get(position).getArtist());
 
     }

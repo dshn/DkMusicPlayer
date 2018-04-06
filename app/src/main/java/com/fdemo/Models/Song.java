@@ -12,6 +12,16 @@ public class Song {
     String path;
     int position;
     long albumId;
+    String thumbnail;
+
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
 
     public long getAlbumId() {
         return albumId;

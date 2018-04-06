@@ -64,7 +64,6 @@ public class ArtistFragment extends Fragment {
                         MediaStore.Audio.Artists.ARTIST,
                         MediaStore.Audio.Artists.NUMBER_OF_TRACKS,
                         MediaStore.Audio.Artists.NUMBER_OF_ALBUMS,
-
                 };
 
         Cursor cursor = getActivity().getContentResolver().query(

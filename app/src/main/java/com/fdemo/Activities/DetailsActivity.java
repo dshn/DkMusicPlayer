@@ -42,6 +42,10 @@ public class DetailsActivity extends AppCompatActivity {
 
         songs= getIntent().getParcelableExtra("Model");
         getAlbumSongs(Integer.parseInt(songs.getAlbumId()));
+
+        AndroidBuildingMusicPlayerActivity.playlist=songsList;
+
+
         Glide.with(this).load(songs.getThumbnail()).into(imgThumb);
 
         mAdapter = new SongsDetailsAdapter(DetailsActivity.this,songsList);
@@ -67,8 +71,6 @@ public class DetailsActivity extends AppCompatActivity {
                     }
                 })
         );
-
-
     }
 
 

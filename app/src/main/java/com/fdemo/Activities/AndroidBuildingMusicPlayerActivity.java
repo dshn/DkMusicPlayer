@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.fdemo.Fragments.SongsFragment;
 import com.fdemo.Models.Model;
+import com.fdemo.Models.Song;
 import com.fdemo.R;
 import com.fdemo.Utils.Utilities;
 
@@ -53,7 +54,7 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 	//private ArrayList<Model> songsList = new ArrayList<Model>();
 	private ImageView imgThumbnail;
 	private boolean isRelease;
-	public static ArrayList<Model> playlist;
+	public static ArrayList<Song> playlist;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -292,7 +293,7 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 			mp.prepare();
 			mp.start();
 			// Displaying Song title
-			String songTitle = playlist.get(songIndex).getName();
+			String songTitle = playlist.get(songIndex).getTitle();
         	songTitleLabel.setText(songTitle);
 			Glide.with(this).load(playlist.get(songIndex).getThumbnail()).into(imgThumbnail);
 

@@ -17,6 +17,7 @@ import com.fdemo.Activities.AndroidBuildingMusicPlayerActivity;
 import com.fdemo.Activities.DetailsActivity;
 import com.fdemo.Adapters.SongsAdapter;
 import com.fdemo.Models.Model;
+import com.fdemo.Models.Song;
 import com.fdemo.R;
 import com.fdemo.Utils.RecyclerItemClickListener;
 
@@ -31,7 +32,7 @@ public class SongsFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
     private SongsAdapter mAdapter;
-    private ArrayList<Model> audioList;
+    private ArrayList<Song> audioList;
    // public static ArrayList<Model> songsList=new ArrayList<>();
 
     @Override
@@ -94,9 +95,9 @@ public class SongsFragment extends Fragment {
                     int pathIndex = audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
                     int artistIndex = audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST);
 
-                    Model model=new Model();
+                    Song model=new Song();
 
-                    model.setName(audioCursor.getString(nameIndex));
+                    model.setTitle(audioCursor.getString(nameIndex));
                     model.setPath(audioCursor.getString(pathIndex));
                     model.setArtist(audioCursor.getString(artistIndex));
 
