@@ -1,12 +1,16 @@
 package com.fdemo.Activities;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Intent;
 import android.media.Image;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
+import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -41,7 +45,7 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 	private TextView songCurrentDurationLabel;
 	private TextView songTotalDurationLabel;
 	// Media Player
-	private MediaPlayer mp;
+	public static MediaPlayer mp;
 	// Handler to update UI timer, progress bar etc,.
 	private Handler mHandler = new Handler();;
 
@@ -53,8 +57,9 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 	private boolean isRepeat = false;
 	//private ArrayList<Model> songsList = new ArrayList<Model>();
 	private ImageView imgThumbnail;
-	private boolean isRelease;
+	public static boolean isRelease;
 	public static ArrayList<Song> playlist;
+	private PlayerService playerService;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -75,9 +80,21 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 		songCurrentDurationLabel = (TextView) findViewById(R.id.songCurrentDurationLabel);
 		songTotalDurationLabel = (TextView) findViewById(R.id.songTotalDurationLabel);
 		imgThumbnail=(ImageView)findViewById(R.id.img_thumbnail);
-		
-		// Mediaplayer
-		mp = new MediaPlayer();
+
+
+
+
+	//	if(mp==null || !mp.isPlaying())
+		{
+			// Mediaplayer
+			mp = new MediaPlayer();
+
+			if(mp.isPlaying()){
+				mp.stop();
+			}
+
+			playerService=new PlayerService();
+		}
 
 		utils = new Utilities();
 		
@@ -89,7 +106,7 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 	//	songsList= SongsFragment.songsList;
 
 		// By default play first song
-		playSong(Integer.parseInt(getIntent().getStringExtra("pos")));
+		playerService.playSong(Integer.parseInt(getIntent().getStringExtra("pos")));
 				
 		/**
 		 * Play button click event
@@ -97,7 +114,7 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 		 * pauses a song and changes button to play image
 		 * */
 		btnPlay.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				// check for already playing
@@ -113,9 +130,13 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 						mp.start();
 						// Changing button image to pause button
 						btnPlay.setImageResource(R.drawable.btn_pause);
+
+						//starting service
+						startService(new Intent(AndroidBuildingMusicPlayerActivity.this, PlayerService.class));
+
 					}
 				}
-				
+
 			}
 		});
 		
@@ -172,11 +193,11 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 			public void onClick(View arg0) {
 				// check if next song is there or not
 				if(currentSongIndex < (playlist.size() - 1)){
-					playSong(currentSongIndex + 1);
+					playerService.playSong(currentSongIndex + 1);
 					currentSongIndex = currentSongIndex + 1;
 				}else{
 					// play first song
-					playSong(0);
+					playerService.playSong(0);
 					currentSongIndex = 0;
 				}
 			}
@@ -191,11 +212,11 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 			@Override
 			public void onClick(View arg0) {
 				if(currentSongIndex > 0){
-					playSong(currentSongIndex - 1);
+					playerService.playSong(currentSongIndex - 1);
 					currentSongIndex = currentSongIndex - 1;
 				}else{
 					// play last song
-					playSong(playlist.size() - 1);
+					playerService.playSong(playlist.size() - 1);
 					currentSongIndex = playlist.size() - 1;
 				}
 				
@@ -276,45 +297,11 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
         if(resultCode == 100){
          	 currentSongIndex = data.getExtras().getInt("songIndex");
          	 // play selected song
-             playSong(currentSongIndex);
+             playerService.playSong(currentSongIndex);
         }
- 
     }
 	
-	/**
-	 * Function to play a song
-	 * @param songIndex - index of song
-	 * */
-	public void  playSong(int songIndex){
-		// Play song
-		try {
-        	mp.reset();
-			mp.setDataSource(playlist.get(songIndex).getPath());
-			mp.prepare();
-			mp.start();
-			// Displaying Song title
-			String songTitle = playlist.get(songIndex).getTitle();
-        	songTitleLabel.setText(songTitle);
-			Glide.with(this).load(playlist.get(songIndex).getThumbnail()).into(imgThumbnail);
 
-			// Changing Button Image to pause image
-			btnPlay.setImageResource(R.drawable.btn_pause);
-			
-			// set Progress bar values
-			songProgressBar.setProgress(0);
-			songProgressBar.setMax(100);
-			
-			// Updating progress bar
-			updateProgressBar();			
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	/**
 	 * Update timer on seekbar
 	 * */
@@ -393,20 +380,20 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 		// check for repeat is ON or OFF
 		if(isRepeat){
 			// repeat is on play same song again
-			playSong(currentSongIndex);
+			playerService.playSong(currentSongIndex);
 		} else if(isShuffle){
 			// shuffle is on - play a random song
 			Random rand = new Random();
 			currentSongIndex = rand.nextInt((playlist.size() - 1) - 0 + 1) + 0;
-			playSong(currentSongIndex);
+			playerService.playSong(currentSongIndex);
 		} else{
 			// no repeat or shuffle ON - play next song
 			if(currentSongIndex < (playlist.size() - 1)){
-				playSong(currentSongIndex + 1);
+				playerService.playSong(currentSongIndex + 1);
 				currentSongIndex = currentSongIndex + 1;
 			}else{
 				// play first song
-				playSong(0);
+				playerService.playSong(0);
 				currentSongIndex = 0;
 			}
 		}
@@ -415,8 +402,84 @@ public class AndroidBuildingMusicPlayerActivity extends Activity implements OnCo
 	@Override
 	 public void onDestroy(){
 	 super.onDestroy();
-	    mp.release();
-	    isRelease=true;
+	 //   mp.release();
+	 //   isRelease=true;
 	 }
-	
+
+
+	public class PlayerService extends Service {
+		//creating a mediaplayer object
+		private MediaPlayer player;
+
+		@Nullable
+		@Override
+		public IBinder onBind(Intent intent) {
+			return null;
+		}
+
+		@Override
+		public int onStartCommand(Intent intent, int flags, int startId) {
+			/*//getting systems default ringtone
+			player = MediaPlayer.create(this,
+					Settings.System.DEFAULT_RINGTONE_URI);
+			//setting loop play to true
+			//this will make the ringtone continuously playing
+			player.setLooping(true);
+
+			//staring the player
+			player.start();*/
+
+
+		//	playSong();
+
+			//we have some options for service
+			//start sticky means service will be explicity started and stopped
+			return START_STICKY;
+		}
+
+
+		/**
+		 * Function to play a song
+		 * @param songIndex - index of song
+		 * */
+		public void  playSong(int songIndex){
+			// Play song
+			try {
+				mp.reset();
+				mp.setDataSource(playlist.get(songIndex).getPath());
+				mp.prepare();
+				mp.start();
+				// Displaying Song title
+				String songTitle = playlist.get(songIndex).getTitle();
+				songTitleLabel.setText(songTitle);
+				Glide.with(AndroidBuildingMusicPlayerActivity.this).load(playlist.get(songIndex).getThumbnail()).into(imgThumbnail);
+
+				// Changing Button Image to pause image
+				btnPlay.setImageResource(R.drawable.btn_pause);
+
+				// set Progress bar values
+				songProgressBar.setProgress(0);
+				songProgressBar.setMax(100);
+
+				// Updating progress bar
+				updateProgressBar();
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void onDestroy() {
+			super.onDestroy();
+			//stopping the player when service is destroyed
+			player.stop();
+		}
+	}
+
+
+
 }

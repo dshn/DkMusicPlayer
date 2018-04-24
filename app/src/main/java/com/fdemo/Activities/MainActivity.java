@@ -1,5 +1,6 @@
 package com.fdemo.Activities;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,8 +53,12 @@ public class MainActivity extends AppCompatActivity {
         ft.commitAllowingStateLoss();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
+        //stopping service
+        stopService(new Intent(this, AndroidBuildingMusicPlayerActivity.PlayerService.class));
 
-
-
+    }
 }

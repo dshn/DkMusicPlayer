@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 25
@@ -44,5 +45,9 @@ dependencies {
     compile 'jp.wasabeef:glide-transformations:3.0.1'
 
     compile 'com.github.florent37:arclayout:1.0.3'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+}
+repositories {
+    mavenCentral()
 }

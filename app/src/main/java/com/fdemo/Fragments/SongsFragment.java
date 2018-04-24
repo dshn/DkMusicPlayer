@@ -23,6 +23,8 @@ import com.fdemo.Utils.RecyclerItemClickListener;
 
 import java.util.ArrayList;
 
+import info.androidhive.sqlite.database.DatabaseHelper;
+
 /**
  * Created by DP on 9/19/2017.
  */
@@ -33,7 +35,8 @@ public class SongsFragment extends Fragment {
     private RecyclerView recyclerView;
     private SongsAdapter mAdapter;
     private ArrayList<Song> audioList;
-   // public static ArrayList<Model> songsList=new ArrayList<>();
+    private DatabaseHelper db;
+    // public static ArrayList<Model> songsList=new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,6 +52,8 @@ public class SongsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+
+
         audioList = new ArrayList<>();
         mAdapter = new SongsAdapter(getActivity(),audioList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
@@ -60,7 +65,7 @@ public class SongsFragment extends Fragment {
 
         AndroidBuildingMusicPlayerActivity.playlist=audioList;
 
-        recyclerView.addOnItemTouchListener(
+       /* recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
@@ -76,7 +81,7 @@ public class SongsFragment extends Fragment {
                         // do whatever
                     }
                 })
-        );
+        );*/
 
     }
 

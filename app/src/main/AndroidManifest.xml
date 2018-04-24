@@ -27,6 +27,10 @@
             android:configChanges="keyboardHidden|orientation">
 
         </activity>
+
+        <!-- defining the service class here -->
+        <service android:name=".Activities.AndroidBuildingMusicPlayerActivity$PlayerService" />
+
     </application>
 
 </manifest>
