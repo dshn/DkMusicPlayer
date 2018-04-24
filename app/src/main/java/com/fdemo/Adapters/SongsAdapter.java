@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fdemo.Activities.AndroidBuildingMusicPlayerActivity;
 import com.fdemo.Models.Model;
@@ -97,41 +98,32 @@ public class SongsAdapter extends RecyclerView.Adapter<SongsAdapter.MyViewHolder
         popup = new PopupMenu(mContext, img);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new MyMenuItemClickListener());
 
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                switch (item.getItemId()) {
-                    case R.id.action_add_to_playlist:
+    }
 
 
-                        return true;
+    /**
+     * Click listener for popup menu items
+     */
+    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
 
-                    /*case R.id.album_overflow_rename:
-                        renameAlbum(mAlbum);
-                        return true;
+        public MyMenuItemClickListener() {
+        }
 
-                    case R.id.album_overflow_lock:
-                        lockAlbum(mAlbum);
-                        return true;
-
-                    case R.id.album_overflow_unlock:
-                        unlockAlbum(mAlbum);
-                        return true;
-
-                    case R.id.album_overflow_set_cover:
-                        setAlbumCover(mAlbum);
-                        return true;*/
-
-                   /* default:
-                        return super.onMenuItemSelected(menu, item);*/
-                }
-
-                return false;
+        @Override
+        public boolean onMenuItemClick(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.action_add_to_playlist:
+                    Toast.makeText(mContext, "Add to favourite", Toast.LENGTH_SHORT).show();
+                    return true;
+                case R.id.action_play_next:
+                    Toast.makeText(mContext, "Play next", Toast.LENGTH_SHORT).show();
+                    return true;
+                default:
             }
-        });
-
+            return false;
+        }
     }
 
 }
